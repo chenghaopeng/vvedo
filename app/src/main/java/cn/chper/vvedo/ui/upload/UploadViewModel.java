@@ -1,16 +1,16 @@
-package cn.chper.vvedo.ui.home;
+package cn.chper.vvedo.ui.upload;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
+public class UploadViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public HomeViewModel() {
+    public UploadViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+        mText.setValue("This is upload fragment");
     }
 
     public LiveData<String> getText() {

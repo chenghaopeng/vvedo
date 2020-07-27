@@ -1,16 +1,16 @@
-package cn.chper.vvedo.ui.notifications;
+package cn.chper.vvedo.ui.square;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class NotificationsViewModel extends ViewModel {
+public class SquareViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public NotificationsViewModel() {
+    public SquareViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is notifications fragment");
+        mText.setValue("This is square fragment");
     }
 
     public LiveData<String> getText() {

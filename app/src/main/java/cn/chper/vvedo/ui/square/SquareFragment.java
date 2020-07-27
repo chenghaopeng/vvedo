@@ -1,4 +1,4 @@
-package cn.chper.vvedo.ui.dashboard;
+package cn.chper.vvedo.ui.square;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProviders;
 
 import cn.chper.vvedo.R;
 
-public class DashboardFragment extends Fragment {
+public class SquareFragment extends Fragment {
 
-    private DashboardViewModel dashboardViewModel;
+    private SquareViewModel squareViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel =
-                ViewModelProviders.of(this).get(DashboardViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        squareViewModel =
+                ViewModelProviders.of(this).get(SquareViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_square, container, false);
         final TextView textView = root.findViewById(R.id.text_dashboard);
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        squareViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
