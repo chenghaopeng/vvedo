@@ -15,7 +15,7 @@ public class ApiServiceImpl {
 
     ApiServiceImpl() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.162:4523/mock/353164/")
+                .baseUrl("http://192.168.2.111:4523/mock/353164/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         this.api = retrofit.create(ApiService.class);
