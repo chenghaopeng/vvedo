@@ -1,5 +1,6 @@
 package cn.chper.vvedo.ui.component;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,6 +43,10 @@ public class VideoList extends Fragment implements VideoListAdapter.VideoClickLi
     }
 
     public void onVideoClick(int clickedItemIndex) {
-
+        Bundle video = new Bundle();
+        video.putString("feedurl", videos.get(clickedItemIndex).getFeedurl());
+        Intent intent = new Intent(getContext(), VideoPlayerActivity.class);
+        intent.putExtra("video", video);
+        startActivity(intent);
     }
 }

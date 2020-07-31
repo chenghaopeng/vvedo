@@ -2,7 +2,9 @@ package cn.chper.vvedo.bean;
 
 import com.google.gson.annotations.SerializedName;
 
-public class VideoBean {
+import java.io.Serializable;
+
+public class VideoBean implements Serializable {
 
     @SerializedName("id")
     Integer id;
