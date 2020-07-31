@@ -4,16 +4,23 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
+
+import cn.chper.vvedo.bean.VideoBean;
+
 public class SquareViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
+    private MutableLiveData<ArrayList<VideoBean>> mVideos;
 
     public SquareViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is square fragment");
+        mVideos = new MutableLiveData<>();
+        mVideos.setValue(new ArrayList<>());
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public void setVideos(ArrayList<VideoBean> videos) { mVideos.setValue(videos); }
+
+    public LiveData<ArrayList<VideoBean>> getVideos() {
+        return mVideos;
     }
+
 }
