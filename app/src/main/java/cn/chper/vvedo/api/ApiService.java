@@ -4,9 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface ApiService {
 
@@ -14,10 +17,11 @@ public interface ApiService {
     Call<SimpleResponse> getVideos();
 
     @GET("video/like")
-    Call<SimpleResponse> getVideoLikes(@Body int vid);
+    Call<SimpleResponse> getVideoLikes(@Query("id") int vid);
 
+    @FormUrlEncoded
     @POST("video/like")
-    Call<SimpleResponse> likeVideo(@Body int vid);
+    Call<SimpleResponse> likeVideo(@Field("id") int vid);
 
     @Multipart
     @POST("video/upload")

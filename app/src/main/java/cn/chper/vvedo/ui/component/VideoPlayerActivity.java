@@ -23,7 +23,12 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import cn.chper.vvedo.R;
+import cn.chper.vvedo.api.ApiServiceImpl;
+import cn.chper.vvedo.api.SimpleResponse;
 import cn.chper.vvedo.bean.VideoBean;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class VideoPlayerActivity extends AppCompatActivity {
 
@@ -116,6 +121,23 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
                 ivLikeAnimation[0].start();
 
+                ApiServiceImpl.instance.api.likeVideo(((VideoBean) videos.get(index)).getId()).enqueue(new Callback<SimpleResponse>() {
+                    @Override
+                    public void onResponse(Call<SimpleResponse> call, Response<SimpleResponse> response) {
+                        if (response.isSuccessful()) {
+                            tvVideoLikecount.setText(String.valueOf(((Double) response.body().data.get("likecount")).intValue()));
+                        }
+                        else {
+                            Toast.makeText(VideoPlayerActivity.this, "点赞失败！", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SimpleResponse> call, Throwable t) {
+                        Toast.makeText(VideoPlayerActivity.this, "点赞失败！", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
                 return super.onDoubleTap(e);
             }
 
@@ -183,6 +205,22 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 .centerCrop()
                 .circleCrop()
                 .into(ivVideoAvatar);
+        ApiServiceImpl.instance.api.getVideoLikes(video.getId()).enqueue(new Callback<SimpleResponse>() {
+            @Override
+            public void onResponse(Call<SimpleResponse> call, Response<SimpleResponse> response) {
+                if (response.isSuccessful()) {
+                    tvVideoLikecount.setText(String.valueOf(((Double) response.body().data.get("likecount")).intValue()));
+                }
+                else {
+                    Toast.makeText(VideoPlayerActivity.this, "获取点赞数失败！", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SimpleResponse> call, Throwable t) {
+                Toast.makeText(VideoPlayerActivity.this, "获取点赞数失败！", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }
