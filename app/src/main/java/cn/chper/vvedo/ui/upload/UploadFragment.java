@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,6 +51,8 @@ public class UploadFragment extends Fragment {
 
     private UploadViewModel uploadViewModel;
 
+    private boolean isUploading = false;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         uploadViewModel =
@@ -77,38 +80,49 @@ public class UploadFragment extends Fragment {
                 Toast.makeText(getContext(), "请先录制一个视频！", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (isUploading) {
+                Toast.makeText(getContext(), "正在上传，请稍候...", Toast.LENGTH_SHORT).show();
+                return;
+            }
             String[] filePathColumn = {MediaStore.Audio.Media.DATA};
             Cursor cursor = getContext().getContentResolver().query(uri, filePathColumn, null, null, null);
             cursor.moveToFirst();
             String path = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
             cursor.close();
+            Toast.makeText(getContext(), "开始压缩并上传...", Toast.LENGTH_SHORT).show();
             new Thread(() -> {
+                isUploading = true;
+                String compressed = null;
                 try {
-                    String compressed = SiliCompressor.with(getContext()).compressVideo(path, path.substring(0, path.lastIndexOf("/")));
-                    HashMap<String, RequestBody> map = new HashMap<>();
-                    File video = new File(compressed);
-                    map.put("video" + video.getName() + "\"", RequestBody.create(MediaType.parse("video/mp4"), video));
-                    ApiServiceImpl.instance.api.uploadVideo(map).enqueue(new Callback<SimpleResponse>() {
-                        @Override
-                        public void onResponse(Call<SimpleResponse> call, Response<SimpleResponse> response) {
-                            if (response.isSuccessful()) {
-                                uploadViewModel.setUri(Uri.EMPTY);
-                                Toast.makeText(getContext(), "上传成功！", Toast.LENGTH_SHORT).show();
-                            }
-                            else {
-                                Toast.makeText(getContext(), "上传失败！", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<SimpleResponse> call, Throwable t) {
-                            Toast.makeText(getContext(), "上传失败！", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    compressed = SiliCompressor.with(getContext()).compressVideo(path, path.substring(0, path.lastIndexOf("/")));
                 }
                 catch (Exception e) {
-                    Toast.makeText(getContext(), "视频压缩失败！", Toast.LENGTH_SHORT).show();
+                    isUploading = false;
+                    return;
                 }
+                HashMap<String, RequestBody> map = new HashMap<>();
+                File video = new File(compressed);
+                map.put("video" + video.getName() + "\"", RequestBody.create(MediaType.parse("video/mpeg4"), video));
+                map.put("token", RequestBody.create(MediaType.parse("text/plain"), ApiServiceImpl.instance.token));
+                ApiServiceImpl.instance.api.uploadVideo(map).enqueue(new Callback<SimpleResponse>() {
+                    @Override
+                    public void onResponse(Call<SimpleResponse> call, Response<SimpleResponse> response) {
+                        isUploading = false;
+                        if (response.isSuccessful()) {
+                            uploadViewModel.setUri(Uri.EMPTY);
+                            Toast.makeText(getContext(), "上传成功！", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(getContext(), "上传失败！", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SimpleResponse> call, Throwable t) {
+                        isUploading = false;
+                        Toast.makeText(getContext(), "上传失败！", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }).start();
         });
         uploadViewModel.getUri().observe(this, uri -> {

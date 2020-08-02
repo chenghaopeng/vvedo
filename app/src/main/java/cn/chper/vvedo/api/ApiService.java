@@ -35,7 +35,7 @@ public interface ApiService {
     Call<SimpleResponse> login(@Body LoginForm loginForm);
 
     @GET("video/my")
-    Call<SimpleResponse> getMyVideos();
+    Call<SimpleResponse> getMyVideos(@Query("token") String token);
 
     class LoginForm {
         @SerializedName("username")

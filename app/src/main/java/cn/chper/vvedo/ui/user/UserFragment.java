@@ -99,7 +99,7 @@ public class UserFragment extends Fragment {
     }
 
     private void getVideoList() {
-        ApiServiceImpl.instance.api.getMyVideos().enqueue(new Callback<SimpleResponse>() {
+        ApiServiceImpl.instance.api.getMyVideos(ApiServiceImpl.instance.token).enqueue(new Callback<SimpleResponse>() {
             @Override
             public void onResponse(Call<SimpleResponse> call, Response<SimpleResponse> response) {
                 if (response.isSuccessful()) {
