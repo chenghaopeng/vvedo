@@ -2,6 +2,9 @@ package cn.chper.vvedo.api;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Map;
+
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -9,6 +12,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PartMap;
 import retrofit2.http.Query;
 
 public interface ApiService {
@@ -25,7 +29,7 @@ public interface ApiService {
 
     @Multipart
     @POST("video/upload")
-    Call<SimpleResponse> uploadVideo();
+    Call<SimpleResponse> uploadVideo(@PartMap Map<String, RequestBody> data);
 
     @POST("user/login")
     Call<SimpleResponse> login(@Body LoginForm loginForm);
