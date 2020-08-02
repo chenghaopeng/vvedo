@@ -43,15 +43,10 @@ public class VideoList extends Fragment implements VideoListAdapter.VideoClickLi
     }
 
     public void onVideoClick(int clickedItemIndex) {
-        VideoBean videoBean = videos.get(clickedItemIndex);
-        Bundle video = new Bundle();
-        video.putString("feedurl", videoBean.getFeedurl());
-        video.putString("avatar", videoBean.getAvatar());
-        video.putString("description", videoBean.getDescription());
-        video.putString("nickname", videoBean.getNickname());
-        video.putInt("likecount", videoBean.getLikecount());
+        ArrayList videos = new ArrayList(this.videos);
         Intent intent = new Intent(getContext(), VideoPlayerActivity.class);
-        intent.putExtra("video", video);
+        intent.putExtra("videos", videos);
+        intent.putExtra("index", clickedItemIndex);
         startActivity(intent);
     }
 }

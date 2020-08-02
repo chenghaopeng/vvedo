@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,8 +20,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 
 import java.net.URI;
+import java.util.ArrayList;
 
 import cn.chper.vvedo.R;
+import cn.chper.vvedo.bean.VideoBean;
 
 public class VideoPlayerActivity extends AppCompatActivity {
 
@@ -38,21 +41,22 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
     private TextView tvVideoLikecount;
 
-    private Bundle video;
+    private ArrayList videos;
+
+    private int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
         getSupportActionBar().hide();
-        if (getIntent().getExtras() == null || getIntent().getExtras().getBundle("video") == null) {
+        if (getIntent().getExtras() == null || getIntent().getExtras().getParcelableArrayList("videos") == null) {
             finish();
             return;
         }
-        video = getIntent().getExtras().getBundle("video");
+        videos = getIntent().getExtras().getParcelableArrayList("videos");
+        index = getIntent().getExtras().getInt("index");
         videoPlayer = findViewById(R.id.video_player);
-        videoPlayer.setVideoURI(Uri.parse(video.getString("feedurl")));
-        videoPlayer.start();
         videoPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
@@ -61,16 +65,9 @@ public class VideoPlayerActivity extends AppCompatActivity {
         });
         ivResumePlay = findViewById(R.id.iv_resume_play);
         tvVideoNickname = findViewById(R.id.tv_video_nickname);
-        tvVideoNickname.setText(video.getString("nickname"));
         tvVideoDescription = findViewById(R.id.tv_video_description);
-        tvVideoDescription.setText(video.getString("description"));
         tvVideoLikecount = findViewById(R.id.tv_video_likecount);
-        tvVideoLikecount.setText(String.valueOf(video.getInt("likecount")));
         ivVideoAvatar = findViewById(R.id.iv_video_avatar);
-        Glide.with(this).load(video.getString("avatar"))
-                .centerCrop()
-                .circleCrop()
-                .into(ivVideoAvatar);
         ivLike = findViewById(R.id.iv_like);
         final AnimatorSet[] ivLikeAnimation = {null};
         GestureDetector gestureDetector = new GestureDetector(VideoPlayerActivity.this, new GestureDetector.SimpleOnGestureListener() {
@@ -121,6 +118,17 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
                 return super.onDoubleTap(e);
             }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (e1.getY() - e2.getY() > 50) {
+                    loadVideo(index + 1);
+                }
+                if (e2.getY() - e1.getY() > 50) {
+                    loadVideo(index - 1);
+                }
+                return super.onFling(e1, e2, velocityX, velocityY);
+            }
         });
         videoPlayer.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -128,9 +136,11 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 return gestureDetector.onTouchEvent(motionEvent);
             }
         });
+        loadVideo(index);
     }
 
     void ivResumePlayAction(boolean visible) {
+        if (!visible && ivResumePlay.getAlpha() == 0.0f) return;
         float scaleFrom = visible ? 1.5f : 1.0f, scaleTo = visible ? 1.0f : 1.5f;
         float alphaFrom = visible ? 0.0f : 1.0f, alphaTo = visible ? 1.0f : 0.0f;
 
@@ -149,6 +159,30 @@ public class VideoPlayerActivity extends AppCompatActivity {
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(scaleXAnimator, scaleYAnimator, alphaAnimator);
         animatorSet.start();
+    }
+
+    void loadVideo(int index) {
+        if (index < 0) {
+            Toast.makeText(VideoPlayerActivity.this, "已经是第一条视频了！", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (index >= videos.size()) {
+            Toast.makeText(VideoPlayerActivity.this, "已经是最后一条视频了！", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        this.index = index;
+        VideoBean video;
+        video = (VideoBean) videos.get(index);
+        videoPlayer.setVideoURI(Uri.parse(video.getFeedurl()));
+        videoPlayer.start();
+        ivResumePlayAction(false);
+        tvVideoNickname.setText(video.getNickname());
+        tvVideoDescription.setText(video.getDescription());
+        tvVideoLikecount.setText(String.valueOf(video.getLikecount()));
+        Glide.with(this).load(video.getAvatar())
+                .centerCrop()
+                .circleCrop()
+                .into(ivVideoAvatar);
     }
 
 }
