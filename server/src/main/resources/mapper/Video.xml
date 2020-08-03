@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chper.vvdo.server.mapper.VideoMapper">
+    <select id="selectByNickname" parameterType="java.lang.String" resultType="cn.chper.vvdo.server.entity.Video">
+        select *
+        from video
+        where nickname=#{nickname,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAll" resultType="cn.chper.vvdo.server.entity.Video">
+        select *
+        from video
+    </select>
+    <select id="selectById" parameterType="java.lang.Integer" resultType="cn.chper.vvdo.server.entity.Video">
+        select *
+        from video
+        where id=#{id,jdbcType=INTEGER}
+    </select>
+    <update id="updateLikeById" parameterType="java.lang.Integer">
+        update video
+        set likecount=likecount+1
+        where id=#{id,jdbcType=INTEGER}
+    </update>
+    <insert id="insert" parameterType="cn.chper.vvdo.server.entity.Video">
+        insert video(`feedurl`,`description`,`avatar`,`nickname`,`likecount`)
+        value(#{feedurl,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR},#{avatar,jdbcType=VARCHAR},#{nickname,jdbcType=VARCHAR},#{likecount,jdbcType=INTEGER})
+    </insert>
+</mapper>

@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/vvdo?serverTimezone=CTT&characterEncoding=UTF-8
+    username: vvdo
+    password: vvdo
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+oss:
+  endpoint: oss-cn-hangzhou.aliyuncs.com
+  url: https://vvdo.oss-cn-hangzhou.aliyuncs.com/
+  accessKeyId: LTAI4FywuaDymAhPH7HeWZCN
+  accessKeySecret: 123456
+  bucketName: vvdo

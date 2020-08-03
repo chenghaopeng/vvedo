@@ -15,7 +15,7 @@ public class ApiServiceImpl {
 
     ApiServiceImpl() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.2.102:8080/")
+                .baseUrl("http://ali.chper.cn:7947/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         this.api = retrofit.create(ApiService.class);
