@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -50,6 +51,8 @@ public class UploadFragment extends Fragment {
 
     private Button btnUpload;
 
+    private EditText edtDescription;
+
     private UploadViewModel uploadViewModel;
 
     private boolean isUploading = false;
@@ -62,6 +65,7 @@ public class UploadFragment extends Fragment {
         vvRecord = root.findViewById(R.id.vv_record);
         btnRecord = root.findViewById(R.id.btn_record);
         btnUpload = root.findViewById(R.id.btn_upload);
+        edtDescription = root.findViewById(R.id.edt_description);
         vvRecord.setOnCompletionListener(view -> {
             vvRecord.start();
         });
@@ -104,12 +108,13 @@ public class UploadFragment extends Fragment {
                 HashMap<String, RequestBody> map = new HashMap<>();
                 File video = new File(compressed);
                 MultipartBody.Part part = MultipartBody.Part.createFormData("video", video.getName(), RequestBody.create(MediaType.parse("video/mpeg4"), video));
-                ApiServiceImpl.instance.api.uploadVideo(part, ApiServiceImpl.instance.token).enqueue(new Callback<SimpleResponse>() {
+                ApiServiceImpl.instance.api.uploadVideo(part, ApiServiceImpl.instance.token, edtDescription.getText().toString()).enqueue(new Callback<SimpleResponse>() {
                     @Override
                     public void onResponse(Call<SimpleResponse> call, Response<SimpleResponse> response) {
                         isUploading = false;
                         if (response.isSuccessful() && response.body().code == 0) {
                             uploadViewModel.setUri(Uri.EMPTY);
+                            edtDescription.setText("");
                             Toast.makeText(getContext(), "上传成功！", Toast.LENGTH_SHORT).show();
                         }
                         else {

@@ -30,7 +30,7 @@ public interface ApiService {
 
     @Multipart
     @POST("video/upload")
-    Call<SimpleResponse> uploadVideo(@Part MultipartBody.Part video, @Part("token") String token);
+    Call<SimpleResponse> uploadVideo(@Part MultipartBody.Part video, @Part("token") String token, @Part("description") String description);
 
     @POST("user/login")
     Call<SimpleResponse> login(@Body LoginForm loginForm);
