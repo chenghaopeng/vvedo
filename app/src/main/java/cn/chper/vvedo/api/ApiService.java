@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -12,6 +13,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Query;
 
@@ -23,13 +25,12 @@ public interface ApiService {
     @GET("video/like")
     Call<SimpleResponse> getVideoLikes(@Query("id") int vid);
 
-    @FormUrlEncoded
     @POST("video/like")
-    Call<SimpleResponse> likeVideo(@Field("id") int vid);
+    Call<SimpleResponse> likeVideo(@Query("id") int vid);
 
     @Multipart
     @POST("video/upload")
-    Call<SimpleResponse> uploadVideo(@PartMap Map<String, RequestBody> data);
+    Call<SimpleResponse> uploadVideo(@Part MultipartBody.Part video, @Part("token") String token);
 
     @POST("user/login")
     Call<SimpleResponse> login(@Body LoginForm loginForm);

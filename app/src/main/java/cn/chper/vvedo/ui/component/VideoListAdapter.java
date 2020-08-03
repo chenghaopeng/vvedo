@@ -40,7 +40,6 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         VideoBean video = videos.get(viewHolderCount);
         Glide.with(view.getContext())
                 .load(video.getFeedurl())
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .into(videoItemViewHolder.imgVideo);
         viewHolderCount++;

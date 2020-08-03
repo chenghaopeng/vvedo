@@ -52,7 +52,7 @@ public class UserFragment extends Fragment {
                 ApiServiceImpl.instance.api.login(new ApiService.LoginForm(username, password)).enqueue(new Callback<SimpleResponse>() {
                     @Override
                     public void onResponse(Call<SimpleResponse> call, Response<SimpleResponse> response) {
-                        if (response.isSuccessful()) {
+                        if (response.isSuccessful() && response.body().code == 0) {
                             ApiServiceImpl.instance.token = (String) response.body().data.get("token");
                             ApiServiceImpl.instance.username = username;
                             Toast.makeText(getContext(), "注册/登录成功，欢迎" + username + "！", Toast.LENGTH_SHORT).show();
@@ -64,7 +64,7 @@ public class UserFragment extends Fragment {
                             getVideoList();
                         }
                         else {
-                            Toast.makeText(getContext(), "请求失败！", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "注册/登录失败，请检查用户名密码是否正确且完整！", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -102,11 +102,11 @@ public class UserFragment extends Fragment {
         ApiServiceImpl.instance.api.getMyVideos(ApiServiceImpl.instance.token).enqueue(new Callback<SimpleResponse>() {
             @Override
             public void onResponse(Call<SimpleResponse> call, Response<SimpleResponse> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body().code == 0) {
                     ArrayList<VideoBean> videos = new ArrayList<>();
                     for (LinkedTreeMap video : (ArrayList<LinkedTreeMap>) response.body().data.get("videos")) {
                         VideoBean videoBean = new VideoBean();
-                        videoBean.setId(0);
+                        videoBean.setId(((Double) video.get("id")).intValue());
                         videoBean.setLikecount(((Double) video.get("likecount")).intValue());
                         videoBean.setFeedurl((String) video.get("feedurl"));
                         videoBean.setAvatar((String) video.get("avatar"));

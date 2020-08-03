@@ -6,6 +6,7 @@ import android.animation.ValueAnimator;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -124,7 +125,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 ApiServiceImpl.instance.api.likeVideo(((VideoBean) videos.get(index)).getId()).enqueue(new Callback<SimpleResponse>() {
                     @Override
                     public void onResponse(Call<SimpleResponse> call, Response<SimpleResponse> response) {
-                        if (response.isSuccessful()) {
+                        if (response.isSuccessful() && response.body().code == 0) {
                             tvVideoLikecount.setText(String.valueOf(((Double) response.body().data.get("likecount")).intValue()));
                         }
                         else {
@@ -208,7 +209,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         ApiServiceImpl.instance.api.getVideoLikes(video.getId()).enqueue(new Callback<SimpleResponse>() {
             @Override
             public void onResponse(Call<SimpleResponse> call, Response<SimpleResponse> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body().code == 0) {
                     tvVideoLikecount.setText(String.valueOf(((Double) response.body().data.get("likecount")).intValue()));
                 }
                 else {

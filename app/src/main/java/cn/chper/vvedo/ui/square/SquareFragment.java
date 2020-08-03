@@ -55,11 +55,11 @@ public class SquareFragment extends Fragment {
         ApiServiceImpl.instance.api.getVideos().enqueue(new Callback<SimpleResponse>() {
             @Override
             public void onResponse(Call<SimpleResponse> call, Response<SimpleResponse> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body().code == 0) {
                     ArrayList<VideoBean> videos = new ArrayList<>();
                     for (LinkedTreeMap video : (ArrayList<LinkedTreeMap>) response.body().data.get("videos")) {
                         VideoBean videoBean = new VideoBean();
-                        videoBean.setId(0);
+                        videoBean.setId(((Double) video.get("id")).intValue());
                         videoBean.setLikecount(((Double) video.get("likecount")).intValue());
                         videoBean.setFeedurl((String) video.get("feedurl"));
                         videoBean.setAvatar((String) video.get("avatar"));

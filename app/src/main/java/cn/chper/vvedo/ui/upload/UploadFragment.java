@@ -32,6 +32,7 @@ import cn.chper.vvedo.R;
 import cn.chper.vvedo.api.ApiServiceImpl;
 import cn.chper.vvedo.api.SimpleResponse;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -102,13 +103,12 @@ public class UploadFragment extends Fragment {
                 }
                 HashMap<String, RequestBody> map = new HashMap<>();
                 File video = new File(compressed);
-                map.put("video" + video.getName() + "\"", RequestBody.create(MediaType.parse("video/mpeg4"), video));
-                map.put("token", RequestBody.create(MediaType.parse("text/plain"), ApiServiceImpl.instance.token));
-                ApiServiceImpl.instance.api.uploadVideo(map).enqueue(new Callback<SimpleResponse>() {
+                MultipartBody.Part part = MultipartBody.Part.createFormData("video", video.getName(), RequestBody.create(MediaType.parse("video/mpeg4"), video));
+                ApiServiceImpl.instance.api.uploadVideo(part, ApiServiceImpl.instance.token).enqueue(new Callback<SimpleResponse>() {
                     @Override
                     public void onResponse(Call<SimpleResponse> call, Response<SimpleResponse> response) {
                         isUploading = false;
-                        if (response.isSuccessful()) {
+                        if (response.isSuccessful() && response.body().code == 0) {
                             uploadViewModel.setUri(Uri.EMPTY);
                             Toast.makeText(getContext(), "上传成功！", Toast.LENGTH_SHORT).show();
                         }
